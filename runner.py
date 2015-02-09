@@ -1,6 +1,7 @@
 import argparse
 from lib.mixpanel_data_puller import extract_dates, stringify_date, parse_date
 from datetime import timedelta
+from time import sleep
 import uuid
 import subprocess
 
@@ -71,7 +72,17 @@ class Runner:
         self.put_s3_string_iter(string_iter, s3_filename, zip)
 
     def put_s3_file(self, filename, bucket):
-        self.run_command(("s3cmd put -r %s s3://%s" % (filename, bucket)).split())
+        retries = 0
+        max_retries = 3
+        while retries < max_retries:
+            try:
+                self.run_command(("s3cmd put -r %s s3://%s" % (filename, bucket)).split())
+                break
+            except Exception as e:
+                print "Error: %s" % e.message
+                print "Retry %d and waiting 1 second" % retries
+                sleep(1)
+                retries += 1
 
     def date_iter(self, start_date, end_date):
         while start_date <= end_date:
