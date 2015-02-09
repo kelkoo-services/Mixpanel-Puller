@@ -41,6 +41,9 @@ class Mixpanel(object):
 
         request = urllib.urlopen(request_url)
 
+        if request.code != 200:
+            raise Exception("Error: Mixpanel communication failed: %s: %s" % (request.code, request.read()))
+
         while True:
             data = request.read(read_byte_size)
             if len(data) == 0:
