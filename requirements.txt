@@ -1,0 +1,2 @@
+python-magic
+s3cmd
