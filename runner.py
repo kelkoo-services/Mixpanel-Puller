@@ -74,15 +74,20 @@ class Runner:
     def put_s3_file(self, filename, bucket):
         retries = 0
         max_retries = 3
+        last_message = ""
         while retries < max_retries:
             try:
                 self.run_command(("s3cmd put -r %s s3://%s" % (filename, bucket)).split())
                 break
             except Exception as e:
+                last_message = e.message
                 print "Error: %s" % e.message
                 print "Retry %d and waiting 1 second" % retries
                 sleep(1)
                 retries += 1
+
+        if retries >= max_retries:
+            raise Exception("Error: aws write failed: %s" % last_message)
 
     def date_iter(self, start_date, end_date):
         while start_date <= end_date:
