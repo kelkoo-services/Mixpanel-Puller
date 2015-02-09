@@ -17,10 +17,11 @@ class SerialRunner(Runner):
     def pull_data_for_date_range(self):
         start_date, end_date = self.args.startdate, self.args.enddate
         for date in self.date_iter(start_date, end_date):
-            date = puller.stringify_date(date)
-            print "Pulling data for %s" % date
-            data_iter = self.pull_data(date)
-            s3_output_file = "%s%s" % (self.output_bucket, date)
+            date_str = puller.stringify_date(date)
+            print "Pulling data for %s" % date_str
+            data_iter = self.pull_data(date_str)
+            s3_output_file = "%s%04d/%02d/%s" % (self.output_bucket, date.year, date.month, date_str)
+            print s3_output_file
             self.put_s3_string_iter(data_iter, s3_output_file, zip=True)
 
 def run(argv):

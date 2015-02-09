@@ -35,7 +35,7 @@ class Runner:
         self.input_bucket = "%sinput/" % self.bucket
         self.code_bucket = "%scode/" % self.bucket
         self.emr_code_dir = "/mnt/code/"
-        self.output_bucket = "%soutput/" % self.bucket
+        self.output_bucket = "%s" % self.bucket
 
     def rm(self, filename):
         self.run_command(['rm', '-f', filename])
